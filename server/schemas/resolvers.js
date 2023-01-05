@@ -20,7 +20,7 @@ const resolvers = {
             const exchange = await Exchange.findById(args.id);
             return exchange;
         },
-        exchangeByUser: async(parent, args, context) => {
+        exchangeByUser: async (parent, args, context) => {
             const exchanges = await Exchange.find({
                 "users.user._id": context.user._id
             });
@@ -66,6 +66,19 @@ const resolvers = {
                 console.error(err)
             }
         },
+        addWishItem: async (parent, args, context) => {
+            console.log("user prop:  ", context.user)
+            try {
+                const wish = await Wish.create({
+                    item: args.item,
+                    owner: context.user
+                });
+                return wish;
+
+            } catch (err) {
+                console.error(err);
+            }
+        },
         addExchange: async (parent, args, context) => {
             console.log("user prop:  ", context.user)
             try {
@@ -75,13 +88,13 @@ const resolvers = {
                     creatorID: context.user._id,
                     users: [context.user]
                 });
-                return exchange ;
-                
+                return exchange;
+
             } catch (err) {
-                console.error(err); 
+                console.error(err);
             }
         },
-        deleteExchange: async(parent, args) => {
+        deleteExchange: async (parent, args) => {
             try {
                 return Exchange.findByIdAndDelete(args.exchangeId)
             } catch (err) {
@@ -91,16 +104,16 @@ const resolvers = {
         joinExchange: async (parent, args, context) => {
             try {
                 console.log("trying to join! on backend--- here look at context.user:", context.user)
-                const exchange = await Exchange.findOneAndUpdate({roomName: args.roomName, passphrase: args.passphrase}, {$push: {users: context.user}}, {new:true})
+                const exchange = await Exchange.findOneAndUpdate({ roomName: args.roomName, passphrase: args.passphrase }, { $push: { users: context.user } }, { new: true })
                 return exchange;
-            } catch(err) {
+            } catch (err) {
                 console.error(err);
                 alert("Invalid Room or Passphrase!");
             }
         },
-        removeFromExchange: async(parent, args) => {
+        removeFromExchange: async (parent, args) => {
             try {
-                await Exchange.findOneAndUpdate({id: args.exhangeId, passphrase: args.passphrase}, {$pull: {users: {id: args.userId}} }, {new:true})
+                await Exchange.findOneAndUpdate({ id: args.exhangeId, passphrase: args.passphrase }, { $pull: { users: { id: args.userId } } }, { new: true })
             } catch (err) {
                 console.error(err)
             }
