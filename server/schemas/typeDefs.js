@@ -5,8 +5,7 @@ const typeDefs = gql
 `
     type Wish {
         _id: ID
-        itemName: String!
-        owner: [User]
+        item: String!
     }
 
     type Exchange {
@@ -22,6 +21,7 @@ const typeDefs = gql
         email: String
         secretSantaId: ID
         exchange: [Exchange]
+        wishes: [String]
     }
 
     type Auth {
@@ -39,7 +39,7 @@ const typeDefs = gql
     }
 
     type Mutation {
-        addWishItem(item: String!): Wish
+        addWishItem(item: String!): User
         addUser(username: String!, email: String!, password: String!): Auth
         deleteUser(userId: ID!): User
         loginUser(username: String!, password: String!): Auth

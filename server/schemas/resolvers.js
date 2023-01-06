@@ -69,14 +69,10 @@ const resolvers = {
         addWishItem: async (parent, args, context) => {
             console.log("user prop:  ", context.user)
             try {
-                const wish = await Wish.create({
-                    item: args.item,
-                    owner: context.user
-                });
-                return wish;
-
+                const user = await User.findOneAndUpdate({ username: context.user.username }, { $push: { wishes: args.item } }, { new: true })
+                return user;
             } catch (err) {
-                console.error(err);
+                console.error(err)
             }
         },
         addExchange: async (parent, args, context) => {
@@ -88,7 +84,7 @@ const resolvers = {
                     creatorID: context.user._id,
                     users: [context.user]
                 });
-                return exchange;
+            return exchange;
 
             } catch (err) {
                 console.error(err);
